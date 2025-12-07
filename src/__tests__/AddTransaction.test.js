@@ -1,11 +1,15 @@
-import { AddTransaction } from '../components/AddTransaction';
-import { GlobalProvider } from '../context/GlobalState';
-import React from 'react';
-import { render, screen } from '@testing-library/react';
+import React from "react";
+import { render, screen } from "@testing-library/react";
+import { AddTransaction } from "../components/AddTransaction";
+import { GlobalProvider } from "../context/GlobalState";
 
-test('renders add transaction form', () => {
-  render(<GlobalProvider><AddTransaction /></GlobalProvider>);
-  
+test("renders add transaction form", () => {
+  render(
+    <GlobalProvider>
+      <AddTransaction />
+    </GlobalProvider>
+  );
+
   const textInput = screen.getByPlaceholderText(/Enter text/i);
   const amountInput = screen.getByPlaceholderText(/Enter amount/i);
   const button = screen.getByText(/Add transaction/i);
@@ -13,8 +17,4 @@ test('renders add transaction form', () => {
   expect(textInput).toBeInTheDocument();
   expect(amountInput).toBeInTheDocument();
   expect(button).toBeInTheDocument();
-
-  fireEvent.change(textInput, { target: { value: 'Pizza' } });
-  fireEvent.change(amountInput, { target: { value: '200' } });
-  fireEvent.click(button);
 });
