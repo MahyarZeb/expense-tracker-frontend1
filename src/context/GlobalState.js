@@ -2,31 +2,30 @@ import React, { createContext, useReducer } from 'react';
 import AppReducer from './AppReducer';
 import axios from 'axios';
 
-// Initial state
+const API_URL = process.env.REACT_APP_API_URL;
+
 const initialState = {
-  transactions: [],  // always an array
+  transactions: [],
   error: null,
   loading: true
-}
+};
 
-// Create context
 export const GlobalContext = createContext(initialState);
 
-// Provider component
 export const GlobalProvider = ({ children }) => {
   const [state, dispatch] = useReducer(AppReducer, initialState);
 
-  // Actions
+  // GET TRANSACTIONS
   async function getTransactions() {
     try {
-      const res = await axios.get('https://expense-tracker-backend.vercel.app/api/v1/transactions');
+      const res = await axios.get(API_URL);
 
       dispatch({
         type: 'GET_TRANSACTIONS',
-        payload: Array.isArray(res.data?.data) ? res.data.data : []  // safe fallback
+        payload: Array.isArray(res.data?.data) ? res.data.data : []
       });
     } catch (err) {
-      console.error(err); // log for debugging
+      console.error(err);
       dispatch({
         type: 'TRANSACTION_ERROR',
         payload: err.response?.data?.error || 'Server Error'
@@ -34,9 +33,10 @@ export const GlobalProvider = ({ children }) => {
     }
   }
 
+  // DELETE TRANSACTION
   async function deleteTransaction(id) {
     try {
-      await axios.delete(`https://expense-tracker-backend.vercel.app/api/v1/transactions/${id}`);
+      await axios.delete(`${API_URL}/${id}`);
 
       dispatch({
         type: 'DELETE_TRANSACTION',
@@ -51,17 +51,16 @@ export const GlobalProvider = ({ children }) => {
     }
   }
 
+  // ADD TRANSACTION
   async function addTransaction(transaction) {
-    const config = {
-      headers: { 'Content-Type': 'application/json' }
-    }
-
     try {
-      const res = await axios.post('https://expense-tracker-backend.vercel.app/api/v1/transactions', transaction, config);
+      const res = await axios.post(API_URL, transaction, {
+        headers: { 'Content-Type': 'application/json' }
+      });
 
       dispatch({
         type: 'ADD_TRANSACTION',
-        payload: res.data?.data || {}  // fallback to empty object
+        payload: res.data?.data || {}
       });
     } catch (err) {
       console.error(err);
@@ -84,4 +83,4 @@ export const GlobalProvider = ({ children }) => {
       {children}
     </GlobalContext.Provider>
   );
-}
+};
