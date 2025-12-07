@@ -1,7 +1,7 @@
+import { AddTransaction } from '../components/AddTransaction';
+import { GlobalProvider } from '../context/GlobalState';
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { GlobalProvider } from '../context/GlobalState';
-import AddTransaction from '../components/AddTransaction';
 
 test('renders add transaction form', () => {
   render(<GlobalProvider><AddTransaction /></GlobalProvider>);
